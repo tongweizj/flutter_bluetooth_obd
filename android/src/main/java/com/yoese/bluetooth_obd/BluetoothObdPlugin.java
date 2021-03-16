@@ -129,6 +129,7 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
       
       result.success("蓝牙连接成功");
     } else if (call.method.equals("getTripRecord")) {
+      System.out.println("开始getTripRecord");
       if (obdAction.equals(ACTION_CONNECTION_STATUS_MSG)) {
         String connectionStatusMsg = obdIntent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
         //OBD connected  do what want after OBD connection
