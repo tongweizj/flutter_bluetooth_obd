@@ -19,6 +19,13 @@ class BluetoothObd {
     return int.parse(result);
   }
 
+  // 启动 OBD 连接
+  static Future<String> get startOBD async {
+    final String startOBDMesg = await _channel.invokeMethod('startOBD');
+    return startOBDMesg;
+  }
+
+  // 获得 OBD 数据
   static Future<String> get tripRecord async {
     final String tripRecords = await _channel.invokeMethod('getTripRecord');
     return tripRecords;
