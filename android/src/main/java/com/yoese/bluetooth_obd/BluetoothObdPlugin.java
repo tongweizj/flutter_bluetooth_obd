@@ -44,6 +44,7 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
   private Context context;
 
   String obdSpeed;
+  String obdEngineCoolantTemp;
 
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "bluetooth_obd");
@@ -96,9 +97,18 @@ final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
         }
     } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
         TripRecord tripRecord = TripRecord.getTripRecode(context);
-
-        obdSpeed = String.valueOf(tripRecord.getSpeed()); //display speed
+        
         // rpm.setText(tripRecord.getEngineRpm()); //display rpm
+        if (tripRecord.getSpeed() != null) {
+          obdSpeed = String.valueOf(tripRecord.getSpeed()); //display speed
+      }else{
+        obdSpeed = "no Speed signal";
+      }
+      if (tripRecord.getmEngineCoolantTemp() != null) {
+        obdEngineCoolantTemp = String.valueOf(tripRecord.getmEngineCoolantTemp()); ;//display coolant temp
+      }else{
+        obdEngineCoolantTemp = "no EngineCoolantTemp signal";
+      }
     }
   }
 };
@@ -108,7 +118,7 @@ System.out.println("Hello, World 1");
       context.startService(new Intent(context, ObdReaderService.class));
       
       
-      result.success("" + obdSpeed);
+      result.success("" + obdSpeed + obdEngineCoolantTemp);
     }else {
       result.notImplemented();
     }
