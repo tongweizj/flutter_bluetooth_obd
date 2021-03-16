@@ -1,0 +1,118 @@
+
+import com.sohrab.obd.reader.application.Preferences;
+import com.sohrab.obd.reader.obdCommand.ObdCommand;
+import com.sohrab.obd.reader.obdCommand.ObdConfiguration;
+import com.sohrab.obd.reader.obdCommand.SpeedCommand;
+import com.sohrab.obd.reader.obdCommand.control.DistanceMILOnCommand;
+import com.sohrab.obd.reader.obdCommand.control.ModuleVoltageCommand;
+import com.sohrab.obd.reader.obdCommand.engine.LoadCommand;
+import com.sohrab.obd.reader.obdCommand.engine.MassAirFlowCommand;
+import com.sohrab.obd.reader.obdCommand.engine.RPMCommand;
+import com.sohrab.obd.reader.obdCommand.temperature.AirIntakeTemperatureCommand;
+import com.sohrab.obd.reader.obdCommand.temperature.EngineCoolantTemperatureCommand;
+import com.sohrab.obd.reader.service.ObdReaderService;
+import com.sohrab.obd.reader.trip.TripRecord;
+
+import java.util.ArrayList;
+
+import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_CONNECTION_STATUS_MSG;
+import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_READ_OBD_REAL_TIME_DATA;
+import io.flutter.embedding.android.FlutterActivity;
+
+public class ObdReader extends FlutterActivity {
+
+
+    protected void onCreate() {
+ 
+
+        //passing obd commands to an array
+        ArrayList<ObdCommand> obdCommands = new ArrayList<>();
+        obdCommands.add(new SpeedCommand()); //speed
+        obdCommands.add(new RPMCommand()); //rpm
+        obdCommands.add(new LoadCommand()); //engine load
+        obdCommands.add(new EngineCoolantTemperatureCommand()); //coolant temp
+        obdCommands.add(new ModuleVoltageCommand()); //fuel pressure
+        obdCommands.add(new AirIntakeTemperatureCommand()); //oil temp
+        obdCommands.add(new MassAirFlowCommand()); //MAF
+        obdCommands.add(new DistanceMILOnCommand()); //MIL distance
+        ObdConfiguration.setmObdCommands(flutterPluginBinding.getApplicationContext(), obdCommands);
+
+        //intent filter to start the service
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
+        intentFilter.addAction(ACTION_CONNECTION_STATUS_MSG);
+        registerReceiver(mObdReaderReceiver, intentFilter);
+        startService(new Intent(flutterPluginBinding.getApplicationContext(), ObdReaderService.class));
+          //bluetooth receiver method
+      final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          String action = intent.getAction();
+
+          if (action.equals(ACTION_CONNECTION_STATUS_MSG)) {
+              String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
+              //OBD connected  do what want after OBD connection
+
+              if (connectionStatusMsg.equals(getString(R.string.connected_ok))) {
+                  //OBD connected  do what want after OBD connection
+              } else {
+                 
+              }
+          } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+              
+              TripRecord tripRecord = TripRecord.getTripRecode(Dashboard.this);
+              obdSpeed = String.valueOf(tripRecord.getSpeed()); //display speed
+              rpm.setText(tripRecord.getEngineRpm()); //display rpm
+             
+            
+          }
+      }};
+    }
+
+    //bluetooth receiver method
+    // private final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
+    //     @Override
+    //     public void onReceive(Context context, Intent intent) {
+
+    //         String action = intent.getAction();
+
+    //         if (action.equals(ACTION_CONNECTION_STATUS_MSG)) {
+    //             String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
+    //             connect.setText(connectionStatusMsg);
+
+    //             if (connectionStatusMsg.equals(getString(R.string.connected_ok))) {
+    //                 Toast.makeText(context, "OBD Connected", Toast.LENGTH_SHORT).show();
+    //             } else {
+    //                 Toast.makeText(context, connectionStatusMsg, Toast.LENGTH_SHORT).show();
+    //             }
+    //         } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+    //             dg.dismiss();
+    //             TripRecord tripRecord = TripRecord.getTripRecode(Dashboard.this);
+
+    //             if (tripRecord.getSpeed() >= 80) {
+    //                 speed.setTextColor(Color.RED);
+    //             }
+    //             else{
+    //                 speed.setTextColor(Color.WHITE);
+    //             }
+    //             speed.setText(String.valueOf(tripRecord.getSpeed())); //display speed
+    //             rpm.setText(tripRecord.getEngineRpm()); //display rpm
+    //             load.setText(tripRecord.getmEngineLoad());//display engine load
+    //             if (tripRecord.getmEngineCoolantTemp() != null) {
+    //                 coolant.setText(tripRecord.getmEngineCoolantTemp());//display coolant temp
+    //             }
+    //             if (tripRecord.getmControlModuleVoltage() != null) {
+    //                 if (Integer.parseInt(tripRecord.getmControlModuleVoltage().substring(0, 2)) <= 11) {
+    //                     battery.setTextColor(Color.RED);
+    //                     Toast.makeText(context, "Battery Voltage Low!", Toast.LENGTH_SHORT).show();
+    //                 }
+    //                 battery.setText(tripRecord.getmControlModuleVoltage()); //display battery voltage
+    //                 mil.setText(tripRecord.getmDistanceTraveledMilOn());//display distance of MIL on
+    //             }
+    //         }
+    //     }
+    // };
+
+
+
+}
