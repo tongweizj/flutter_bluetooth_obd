@@ -11,43 +11,42 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  // 定义一个 int 型变量，用于保存计算结果
-  int _calculateResult;
-  String _tripRecords = 'Unknown';
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    // initPlatformState();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    String tripRecords;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await BluetoothObd.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-    try {
-      tripRecords = await BluetoothObd.tripRecord;
-    } on PlatformException {
-      tripRecords = 'Failed to get tripRecords.';
-    }
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  // Future<void> initPlatformState() async {
+  //   String platformVersion;
+  //   String tripRecords;
+  //   // Platform messages may fail, so we use a try/catch PlatformException.
+  //   try {
+  //     platformVersion = await BluetoothObd.platformVersion;
+  //   } on PlatformException {
+  //     platformVersion = 'Failed to get platform version.';
+  //   }
+  //   try {
+  //     tripRecords = await BluetoothObd.tripRecord;
+  //   } on PlatformException {
+  //     tripRecords = 'Failed to get tripRecords.';
+  //   }
+  //   // If the widget was removed from the tree while the asynchronous platform
+  //   // message was in flight, we want to discard the reply rather than calling
+  //   // setState to update our non-existent appearance.
+  //   if (!mounted) return;
 
-    // init 的时候，计算一下 10 + 10 的结果
-    _calculateResult = await BluetoothObd.calculate(10, 10);
-    setState(() {
-      _platformVersion = platformVersion;
-      _tripRecords = tripRecords;
-    });
-  }
+  //   // init 的时候，计算一下 10 + 10 的结果
+  //   _calculateResult = await BluetoothObd.calculate(10, 10);
+  //   setState(() {
+  //     _platformVersion = platformVersion;
+  //     _tripRecords = tripRecords;
+  //   });
+  //  setState(() {
+
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +63,8 @@ class _MyAppState extends State<MyApp> {
                 Text(context.watch<Counter>().platformVersion),
                 // 输出该结果
                 Text(context.watch<Counter>().calculateResult.toString()),
-                // Text(context.watch<Counter>().tripRecords),
-                Text('tripRecords Result: $_tripRecords\n'),
+                Text(context.watch<Counter>().tripRecords),
+                // Text('tripRecords Result: $_tripRecords\n'),
                 Count(),
                 FlatButton(
                   child: Text("启动obd连接"),
