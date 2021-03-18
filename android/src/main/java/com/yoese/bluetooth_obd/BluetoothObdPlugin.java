@@ -128,7 +128,7 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
       
       
       result.success("蓝牙连接成功");
-    } else if (call.method.equals("getTripRecord")) {
+    } else if (call.method.equals("getAirIntakeTemperature")) {
       System.out.println("开始getTripRecord");
       if (obdAction.equals(ACTION_CONNECTION_STATUS_MSG)) {
         String connectionStatusMsg = obdIntent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
@@ -143,6 +143,17 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
             System.out.println("蓝牙连接不成功");
         }
       } else if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+        TripRecord tripRecord = TripRecord.getTripRecode(context);
+        if (tripRecord.getmEngineCoolantTemp() != null) {
+          obdEngineCoolantTemp = String.valueOf(tripRecord.getmEngineCoolantTemp()); ;//display coolant temp
+        }else{
+          obdEngineCoolantTemp = "no EngineCoolantTemp signal";
+        }
+      }
+      result.success("" + obdEngineCoolantTemp);
+    } else if (call.method.equals("getSpeed")) {
+      System.out.println("开始 getSpeed");
+      if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
           TripRecord tripRecord = TripRecord.getTripRecode(context);
           
           // rpm.setText(tripRecord.getEngineRpm()); //display rpm
@@ -151,69 +162,10 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
         }else{
           obdSpeed = "no Speed signal";
         }
-        if (tripRecord.getmEngineCoolantTemp() != null) {
-          obdEngineCoolantTemp = String.valueOf(tripRecord.getmEngineCoolantTemp()); ;//display coolant temp
-        }else{
-          obdEngineCoolantTemp = "no EngineCoolantTemp signal";
-        }
+      
       }
 
-      // ArrayList<ObdCommand> obdCommands = new ArrayList<>();
-      // obdCommands.add(new SpeedCommand()); //speed
-      // obdCommands.add(new RPMCommand()); //rpm
-      // obdCommands.add(new LoadCommand()); //engine load
-      // obdCommands.add(new EngineCoolantTemperatureCommand()); //coolant temp
-      // obdCommands.add(new ModuleVoltageCommand()); //fuel pressure
-      // obdCommands.add(new AirIntakeTemperatureCommand()); //oil temp
-      // obdCommands.add(new MassAirFlowCommand()); //MAF
-      // obdCommands.add(new DistanceMILOnCommand()); //MIL distance
-      // ObdConfiguration.setmObdCommands(context, obdCommands);
-      // //Register receiver with some action related to OBD connection status and read PID values
-      // IntentFilter intentFilter = new IntentFilter();
-      // intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
-      // intentFilter.addAction(ACTION_CONNECTION_STATUS_MSG);
-      //bluetooth receiver method
-      // final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
-      //   @Override
-      //   public void onReceive(Context context, Intent intent) {
-      //     String action = intent.getAction();
-      //     System.out.println("Hello, World 2");
-      //     if (action.equals(ACTION_CONNECTION_STATUS_MSG)) {
-      //         String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
-      //         //OBD connected  do what want after OBD connection
-      //         System.out.println("Hello, World 3");
-      //         System.out.println(context.getString(R.string.connected_ok));
-      //         if (connectionStatusMsg.equals(context.getString(R.string.connected_ok))) {
-      //             //OBD connected  do what want after OBD connection
-      //             System.out.println("蓝牙连接成功");
-      //         } else {
-      //             //OBD connected  do what want after OBD connection
-      //             System.out.println("蓝牙连接不成功");
-      //         }
-      //     } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
-      //         TripRecord tripRecord = TripRecord.getTripRecode(context);
-              
-      //         // rpm.setText(tripRecord.getEngineRpm()); //display rpm
-      //         if (tripRecord.getSpeed() != null) {
-      //           obdSpeed = String.valueOf(tripRecord.getSpeed()); //display speed
-      //       }else{
-      //         obdSpeed = "no Speed signal";
-      //       }
-      //       if (tripRecord.getmEngineCoolantTemp() != null) {
-      //         obdEngineCoolantTemp = String.valueOf(tripRecord.getmEngineCoolantTemp()); ;//display coolant temp
-      //       }else{
-      //         obdEngineCoolantTemp = "no EngineCoolantTemp signal";
-      //       }
-      //     }
-      //   }
-      // };
-      // System.out.println("Hello, World 1");
-      // context.registerReceiver(mObdReaderReceiver, intentFilter);
-      // //start service that keep running in background for connecting and execute command until you stop
-      // context.startService(new Intent(context, ObdReaderService.class));
-      
-      
-      result.success("" + obdSpeed + obdEngineCoolantTemp);
+      result.success("" + obdSpeed);
     }else {
       result.notImplemented();
     }

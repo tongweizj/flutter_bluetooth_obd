@@ -1,3 +1,4 @@
+import 'package:bluetooth_obd_example/widget_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -17,74 +18,45 @@ class _MyAppState extends State<MyApp> {
     // initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  // Future<void> initPlatformState() async {
-  //   String platformVersion;
-  //   String tripRecords;
-  //   // Platform messages may fail, so we use a try/catch PlatformException.
-  //   try {
-  //     platformVersion = await BluetoothObd.platformVersion;
-  //   } on PlatformException {
-  //     platformVersion = 'Failed to get platform version.';
-  //   }
-  //   try {
-  //     tripRecords = await BluetoothObd.tripRecord;
-  //   } on PlatformException {
-  //     tripRecords = 'Failed to get tripRecords.';
-  //   }
-  //   // If the widget was removed from the tree while the asynchronous platform
-  //   // message was in flight, we want to discard the reply rather than calling
-  //   // setState to update our non-existent appearance.
-  //   if (!mounted) return;
-
-  //   // init 的时候，计算一下 10 + 10 的结果
-  //   _calculateResult = await BluetoothObd.calculate(10, 10);
-  //   setState(() {
-  //     _platformVersion = platformVersion;
-  //     _tripRecords = tripRecords;
-  //   });
-  //  setState(() {
-
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Container(
-          padding: EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Text(context.watch<Counter>().platformVersion),
-                // 输出该结果
-                Text(context.watch<Counter>().calculateResult.toString()),
-                Text(context.watch<Counter>().tripRecords),
-                // Text('tripRecords Result: $_tripRecords\n'),
-                Count(),
-                FlatButton(
-                  child: Text("启动obd连接"),
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text('OBD READER'),
+              actions: [
+                IconButton(
+                  tooltip: 'connect OBD',
+                  icon: const Icon(
+                    Icons.bluetooth,
+                  ),
                   onPressed: () => context.read<Counter>().startOBD(),
-                )
+                ),
+                IconButton(
+                  tooltip: 'Refresh OBD Data',
+                  icon: const Icon(
+                    Icons.refresh,
+                  ),
+                  onPressed: () => context.read<Counter>().increment(),
+                ),
+                IconButton(
+                  tooltip: 'starterAppTooltipSearch',
+                  icon: const Icon(
+                    Icons.bluetooth_disabled,
+                  ),
+                  onPressed: () {},
+                ),
               ],
             ),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          key: const Key('increment_floatingActionButton'),
-
-          /// Calls `context.read` instead of `context.watch` so that it does not rebuild
-          /// when [Counter] changes.
-          onPressed: () => context.read<Counter>().increment(),
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
-        ),
-      ),
-    );
+            body: GridView.count(
+              // Create a grid with 2 columns. If you change the scrollDirection to
+              // horizontal, this produces 2 rows.
+              crossAxisCount: 2,
+              children: List.generate(6, (index) {
+                return buildCard(context.watch<Counter>().obdData['$index'][0],
+                    context.watch<Counter>().obdData['$index'][1]);
+              }),
+            )));
   }
 }
 
