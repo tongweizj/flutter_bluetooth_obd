@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class Count extends StatelessWidget {
-  const Count({Key key}) : super(key: key);
+  const Count({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

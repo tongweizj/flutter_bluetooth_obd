@@ -2,14 +2,28 @@
 
 bluetooth_obd
 
-## Getting Started
+## OBD data 
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+|  data    |  api    |      |
+| ---- | ---- | ---- |
+|  speed    |      |      |
+|  Max Speed    |      |      |
+|  rpm    |      |      |
+|  Max Rpm    |      |      |
+|  engine runtime    |      |      |
+|  Trouble codes    |      |      |
+|  Idling Fuel Consumtion   |      |      |
+|  Driving Fuel Consumtion    |      |      |
+|  Instant Fuel Consumtion    |      |      |
+|  driving maf    |      |      |
+|  idle maf    |      |      |
+|  Fuel Type Value    |      |      |
+|  Rapid Acceleration Times    |      |      |
+|  Rapid Decleration Times    |      |      |
+|  Distance Travel    |      |      |
+|  Distance since codes cleared    |      |      |
+|  Distance traveled with MIL on    |      |      |
+|  Intake pressure    |      |      |
+|  Intake tempereture    |      |      |
+|      |      |      |
 

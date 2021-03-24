@@ -1,10 +1,10 @@
 name: bluetooth_obd
 description: bluetooth_obd
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/tongweizj/flutter_bluetooth_obd
 documentation: https://github.com/tongweizj/flutter_bluetooth_obd
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
   flutter: ">=1.20.0"
 
 dependencies:
