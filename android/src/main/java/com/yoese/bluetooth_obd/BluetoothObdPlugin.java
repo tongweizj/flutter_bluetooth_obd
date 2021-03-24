@@ -45,6 +45,10 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
 
   String obdSpeed;
   String obdEngineCoolantTemp;
+  String obdEngineLoad;
+  String obdEngineRpm;
+  String obdModuleVoltage;
+  String obdDistanceMILOn;
   BroadcastReceiver mObdReaderReceiver;
   Intent obdIntent;
   String obdAction ;
@@ -128,7 +132,7 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
       
       
       result.success("蓝牙连接成功");
-    } else if (call.method.equals("getAirIntakeTemperature")) {
+    } else if (call.method.equals("getTripRecord")) {
       System.out.println("开始getTripRecord");
       if (obdAction.equals(ACTION_CONNECTION_STATUS_MSG)) {
         String connectionStatusMsg = obdIntent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
@@ -144,6 +148,9 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
         }
       } else if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
         TripRecord tripRecord = TripRecord.getTripRecode(context);
+        System.out.println("tripRecord");
+        System.out.println(tripRecord);
+        
         if (tripRecord.getmEngineCoolantTemp() != null) {
           obdEngineCoolantTemp = String.valueOf(tripRecord.getmEngineCoolantTemp()); ;//display coolant temp
         }else{
@@ -155,17 +162,73 @@ public class BluetoothObdPlugin implements FlutterPlugin, MethodCallHandler {
       System.out.println("开始 getSpeed");
       if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
           TripRecord tripRecord = TripRecord.getTripRecode(context);
-          
-          // rpm.setText(tripRecord.getEngineRpm()); //display rpm
           if (tripRecord.getSpeed() != null) {
             obdSpeed = String.valueOf(tripRecord.getSpeed()); //display speed
         }else{
           obdSpeed = "no Speed signal";
         }
-      
       }
-
       result.success("" + obdSpeed);
+
+    }else if (call.method.equals("getRPM")) {
+      System.out.println("开始 getRPM");
+      if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+          TripRecord tripRecord = TripRecord.getTripRecode(context);
+          if (tripRecord.getEngineRpm() != null) {
+            obdEngineRpm = String.valueOf(tripRecord.getEngineRpm()); //display speed
+        }else{
+          obdEngineRpm = "no Speed signal";
+        }
+      }
+      result.success("" + obdEngineRpm);
+
+    }else if (call.method.equals("getAirIntakeTemperature")) {
+      System.out.println("开始 getAirIntakeTemperature");
+      if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+          TripRecord tripRecord = TripRecord.getTripRecode(context);
+          if (tripRecord.getmEngineCoolantTemp() != null) {
+            obdEngineCoolantTemp = String.valueOf(tripRecord.getmEngineCoolantTemp()); ;//display coolant temp
+          }else{
+            obdEngineCoolantTemp = "no EngineCoolantTemp signal";
+          }
+      }
+      result.success("" + obdEngineCoolantTemp);
+
+    }else if (call.method.equals("getEngineLoad")) {
+      System.out.println("开始 getEngineLoad");
+      if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+          TripRecord tripRecord = TripRecord.getTripRecode(context);
+          if (tripRecord.getmEngineLoad() != null) {
+            obdEngineLoad = String.valueOf(tripRecord.getmEngineLoad()); //display speed
+        }else{
+          obdEngineLoad = "no Speed signal";
+        }
+      }
+      result.success("" + obdEngineLoad);
+
+    }else if (call.method.equals("getModuleVoltage")) {
+      System.out.println("开始 getModuleVoltage");
+      if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+          TripRecord tripRecord = TripRecord.getTripRecode(context);
+          if (tripRecord.getmControlModuleVoltage() != null) {
+            obdModuleVoltage = String.valueOf(tripRecord.getmControlModuleVoltage()); //display speed
+        }else{
+          obdModuleVoltage = "no Module Voltage signal";
+        }
+      }
+      result.success("" + obdModuleVoltage);
+
+    }else if (call.method.equals("getDistanceMILOn")) {
+      System.out.println("开始 getDistanceMILOn");
+      if (obdAction.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+          TripRecord tripRecord = TripRecord.getTripRecode(context);
+          if (tripRecord.getmDistanceTraveledMilOn() != null) {
+            obdDistanceMILOn = String.valueOf(tripRecord.getmDistanceTraveledMilOn()); //display speed
+        }else{
+          obdDistanceMILOn = "no Distance MILOn signal";
+        }
+      }
+      result.success("" + obdDistanceMILOn);
     }else {
       result.notImplemented();
     }

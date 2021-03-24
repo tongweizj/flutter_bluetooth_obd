@@ -5,12 +5,14 @@ import 'package:flutter/services.dart';
 
 /// Mix-in [DiagnosticableTreeMixin] to have access to [debugFillProperties] for the devtool
 // ignore: prefer_mixin
-class Counter with ChangeNotifier, DiagnosticableTreeMixin {
-  int _count = 0;
-  String _platformVersion = '';
+class ObdReader with ChangeNotifier, DiagnosticableTreeMixin {
   String _tripRecords = '';
   String _obdSpeed = '';
-  int _calculateResult = 0;
+  String _obdEngineCoolantTemp = '';
+  String _obdEngineLoad = '';
+  String _obdEngineRpm = '';
+  String _obdModuleVoltage = '';
+  String _obdDistanceMILOn = '';
   Map _obdData = {
     '0': ['Speed', '0'],
     '1': ['CoolantTemperature', '0'],
@@ -20,11 +22,13 @@ class Counter with ChangeNotifier, DiagnosticableTreeMixin {
     '5': ['DistanceMILOn', '0']
   };
 
-  int get count => _count;
-  String get platformVersion => _platformVersion;
   String get tripRecords => _tripRecords;
   String get obdSpeed => _obdSpeed;
-  int get calculateResult => _calculateResult;
+  String get obdEngineCoolantTemp => _obdEngineCoolantTemp;
+  String get obdEngineLoad => _obdEngineLoad;
+  String get obdEngineRpm => _obdEngineRpm;
+  String get obdModuleVoltage => _obdModuleVoltage;
+  String get obdDistanceMILOn => _obdDistanceMILOn;
   Map get obdData => _obdData;
 
   Future<void> startOBD() async {
@@ -41,38 +45,62 @@ class Counter with ChangeNotifier, DiagnosticableTreeMixin {
   }
 
   Future<void> increment() async {
-    _count++;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      _platformVersion = await BluetoothObd.platformVersion;
-    } on PlatformException {
-      _platformVersion = 'Failed to get platform version.';
-    }
-    try {
-      _tripRecords = await BluetoothObd.tripRecord;
-      _obdData['0'][1] = _tripRecords;
-    } on PlatformException {
-      _tripRecords = 'Failed to get tripRecords.';
-      _obdData['0'][1] = 'Failed to get airIntakeTemperature.';
-    }
+    // try {
+    //   _tripRecords = await BluetoothObd.getSpeed;
+    //   _obdData['0'][1] = _tripRecords;
+    // } on PlatformException {
+    //   _tripRecords = 'Failed to get tripRecords.';
+    //   _obdData['0'][1] = 'Failed to get airIntakeTemperature.';
+    // }
 
-    // init 的时候，计算一下 10 + 10 的结果
-    _calculateResult = await BluetoothObd.calculate(10, 10);
     // obd speed
     try {
       _obdSpeed = await BluetoothObd.getSpeed;
-      _obdData['1'][1] = _obdSpeed;
+      _obdData['0'][1] = _obdSpeed;
     } on PlatformException {
       _obdSpeed = 'Failed to get speed.';
-      _obdData['1'][1] = 'Failed to get speed.';
+      _obdData['0'][1] = 'Failed to get speed.';
+    }
+    // obd EngineCoolantTemp
+    try {
+      _obdEngineCoolantTemp = await BluetoothObd.getAirIntakeTemperature;
+      _obdData['1'][1] = _obdEngineCoolantTemp;
+    } on PlatformException {
+      _obdSpeed = 'Failed to get Engine Coolant Temp.';
+      _obdData['1'][1] = 'Failed to get Engine Coolant Temp.';
+    }
+    // 获得 OBD RPM 数据
+    try {
+      _obdEngineRpm = await BluetoothObd.getRPM;
+      _obdData['2'][1] = _obdEngineRpm;
+    } on PlatformException {
+      _obdEngineRpm = 'Failed to get Engine Rpm.';
+      _obdData['2'][1] = 'Failed to get Engine Rpm.';
+    }
+    // obd getEngineLoad
+    try {
+      _obdEngineLoad = await BluetoothObd.getEngineLoad;
+      _obdData['3'][1] = _obdEngineLoad;
+    } on PlatformException {
+      _obdEngineLoad = 'Failed to get Engine Load.';
+      _obdData['3'][1] = 'Failed to get Engine Load.';
+    }
+    // obd getModuleVoltage
+    try {
+      _obdModuleVoltage = await BluetoothObd.getModuleVoltage;
+      _obdData['4'][1] = _obdModuleVoltage;
+    } on PlatformException {
+      _obdModuleVoltage = 'Failed to get Module Voltage.';
+      _obdData['4'][1] = 'Failed to get Module Voltage.';
+    }
+    // obd getDistanceMILOn
+    try {
+      _obdDistanceMILOn = await BluetoothObd.getDistanceMILOn;
+      _obdData['5'][1] = _obdDistanceMILOn;
+    } on PlatformException {
+      _obdDistanceMILOn = 'Failed to get Distance MILOn.';
+      _obdData['5'][1] = 'Failed to get Distance MILOn.';
     }
     notifyListeners();
-  }
-
-  /// Makes `Counter` readable inside the devtools by listing all of its properties
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(IntProperty('count', count));
   }
 }
