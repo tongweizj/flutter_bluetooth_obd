@@ -1,6 +1,6 @@
 name: bluetooth_obd
 description: bluetooth_obd
-version: 0.0.4
+version: 0.0.6
 homepage: https://github.com/tongweizj/flutter_bluetooth_obd
 documentation: https://github.com/tongweizj/flutter_bluetooth_obd
 environment:
